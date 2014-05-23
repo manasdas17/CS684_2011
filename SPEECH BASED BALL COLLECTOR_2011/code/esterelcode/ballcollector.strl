@@ -1,0 +1,127 @@
+%{
+Authors:
+
+Group 4:
+---------
+
+Subhabhrata Mukherjee 10305061
+Dhaval Manvar 10305021
+Janardhan Singh 10305067
+
+
+AVR Studio Version 4.17, Build 666
+
+Date: 9th November 2011
+
+This project is about developing a robot which can collect balls randomly scattered around in an arena based on speech command.
+
+Concepts covered: Image Processing, Speech Processing, Wireless Communication through Zigbee and Interrupt Handling.
+
+Note:
+
+1. Make sure that in the configuration options following settings are done for proper operation of the code
+
+Microcontroller: atmega2560 Frequency: 14745600 Optimization: -O0 (For more information read section: Selecting proper optimization options below figure 4.22 in the hardware manual)
+
+2. The scilab code uses a serial port for communicating data through zigbee module. This port number must be changed accordingly. 
+
+Following Signals have been added in the Esterel library to control Firebird V Robot.
+
+1) RECEIVE : This is input signal which receives 1 byte data at a time from zigbee module attached to robot.
+2) SEND : This is output signal which sends 1 byte data using zibee module.
+3) PICK : This is output signal. On emitting this command, Robot picks the object,i.e. ball, using arm, which is made by using 3 servo motors.
+4) Drop : This is output signal. On emitting this command, Robot drops the object,i.e. ball, in bucket.
+5) MOVE_INPLACE_RIGHT_SPEED : This is output signal, used to rotate robot right side at given speed for 500 msec. 
+
+*********************************************************************************/
+/********************************************************************************
+
+   Copyright (c) 2011, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+   * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+   * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+   * Neither the name of the copyright holders nor the names of
+     contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+   * Source code can be used for academic purpose. For commercial use permission form the author needs to be taken.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+  Software released under Creative Commence cc by-nc-sa licence.
+  For legal information refer to: 
+  http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+
+}%
+
+module xbee:
+	input RECEIVE:integer,FRONT_IR_VALUE:integer;
+	output SEND:integer,MOVE_FWD,MOTOR_LEFT_SPEED:integer,MOTOR_RIGHT_SPEED:integer,MOVE_INPLACE_RIGHT_SPEED:integer,PICK,DROP;
+	loop [await RECEIVE];
+			trap X in [
+				loop [await RECEIVE];
+				var rdata:integer in 
+					rdata:=?RECEIVE;
+					if rdata = 49 then
+						emit MOVE_INPLACE_RIGHT_SPEED(150);
+					elsif rdata = 50 then
+						emit SEND(50);
+						exit X;
+					end; 
+				end var;
+				end;
+			] end;
+
+			emit MOVE_FWD; 
+			emit MOTOR_LEFT_SPEED(150);
+			emit MOTOR_RIGHT_SPEED(150);
+		
+			trap X in [
+				loop [await FRONT_IR_VALUE];
+				var fir:integer in 
+					fir:=?FRONT_IR_VALUE;
+					if fir < 120 then
+						exit X;
+					end; 
+				end var;
+				end;
+			] end;
+			emit PICK;
+			emit SEND(51);
+			
+			trap X in [
+				loop [await RECEIVE];
+				var recvdata:integer in 
+					recvdata:=?RECEIVE;
+					if recvdata = 52 then
+						emit MOVE_INPLACE_RIGHT_SPEED(200);
+					elsif recvdata = 53 then
+						emit SEND(53);
+						exit X;
+					end; 
+				end var;
+				end;
+			] end;
+			
+			emit MOVE_FWD; 
+			emit MOTOR_LEFT_SPEED(150);
+			emit MOTOR_RIGHT_SPEED(150);
+		
+			trap X in [
+				loop [await FRONT_IR_VALUE];
+				var fir:integer in 
+					fir:=?FRONT_IR_VALUE;
+					if fir < 120 then
+						exit X;
+					end; 
+				end var;
+				end;
+			] end;
+			emit DROP;
+			emit SEND(54);
+	end
+end module

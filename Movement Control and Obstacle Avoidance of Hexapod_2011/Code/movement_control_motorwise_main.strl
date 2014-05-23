@@ -1,0 +1,96 @@
+%authors Krishna Teja, Nikhil
+module motion_control:
+	input FRONT_SHARP_VALUE:integer,RIGHT_SHARP_VALUE:integer,LEFT_SHARP_VALUE:integer;
+	output LCD_INIT,LCD_SET_4_BIT,LCD_DISPLAY_INT_1(integer),MOTOR_1A(integer),MOTOR_1B(integer),MOTOR_1C(integer),MOTOR_2A(integer),MOTOR_2B(integer),MOTOR_2C(integer),MOTOR_3A(integer),MOTOR_3B(integer),MOTOR_3C(integer),MOTOR_4A(integer),MOTOR_4B(integer),MOTOR_4C(integer),MOTOR_5A(integer),MOTOR_5B(integer),MOTOR_5C(integer),MOTOR_6A(integer),MOTOR_6B(integer),MOTOR_6C(integer),DELAY(integer),SERVO_CALIBARATION,MOVE_REV,BUZZER_ON,BUZZER_OFF;
+	emit LCD_INIT;
+	emit LCD_SET_4_BIT;
+	loop
+		[await FRONT_SHARP_VALUE];
+		var fir:integer in
+			fir:=?FRONT_SHARP_VALUE;
+			emit LCD_DISPLAY_INT_1(fir);
+			if fir>69 and fir<255 then
+				emit MOVE_REV;
+				emit BUZZER_ON;				
+			else 
+				emit SERVO_CALIBARATION;
+				[await tick];
+				emit MOTOR_2B(45);
+				[await tick];
+				emit MOTOR_2C(45);
+				[await tick];
+				emit MOTOR_4B(135);
+				[await tick];
+				emit MOTOR_4C(135);
+				[await tick];
+				emit DELAY(250);
+				[await tick];
+				emit MOTOR_2A(45);
+				[await tick];
+				emit MOTOR_4A(135);
+				[await tick];
+				emit DELAY(250);
+				[await tick]; 
+				emit MOTOR_2B(90);
+				[await tick];
+				emit MOTOR_2C(90);
+				[await tick];
+				emit MOTOR_4B(90);
+				[await tick];
+				emit MOTOR_4C(90);
+				[await tick];
+				emit MOTOR_1B(45);
+				[await tick];
+				emit MOTOR_1C(45);
+				[await tick];
+				emit MOTOR_6B(135);
+				[await tick];
+				emit MOTOR_6C(135);
+				[await tick];
+				emit DELAY(250);
+				[await tick];
+				emit MOTOR_1A(45);
+				[await tick];
+				emit MOTOR_6A(135);
+				[await tick];
+				emit DELAY(250);
+				[await tick];
+				emit MOTOR_1B(90);
+				[await tick];
+				emit MOTOR_1C(90);
+				[await tick];
+				emit MOTOR_6B(90);
+				[await tick]; 
+				emit MOTOR_6C(90);
+				[await tick];
+				emit MOTOR_3B(45);
+				[await tick];
+				emit MOTOR_3C(45);
+				[await tick];
+				emit MOTOR_5B(135);
+				[await tick];
+				emit MOTOR_5C(135);
+				[await tick];
+				emit DELAY(250);
+				[await tick];
+				emit MOTOR_3A(45);
+				[await tick];
+				emit MOTOR_5A(135);
+				[await tick];
+				emit DELAY(250);
+				[await tick];
+				emit MOTOR_3B(90);
+				[await tick];
+				emit MOTOR_3C(90);
+				[await tick];
+				emit MOTOR_5B(90);
+				[await tick];
+				emit MOTOR_5C(90);
+				[await tick];
+				emit SERVO_CALIBARATION;
+				emit BUZZER_OFF;
+			end;
+
+		end var;
+	end
+end module

@@ -1,0 +1,44 @@
+%author: Krishna Teja V, Srinivas
+module motion_control:
+	input FRONT_SHARP_VALUE:integer,LEFT_SHARP_VALUE:integer,RIGHT_SHARP_VALUE:integer;
+	output LCD_INIT,LCD_SET_4_BIT,LCD_DISPLAY_INT_1(integer),LCD_DISPLAY_2(string),MOVE_FWD,ROTATE_RIGHT(integer),ROTATE_LEFT(integer),MOVE_REV,BUZZER_ON,BUZZER_OFF;
+	emit LCD_INIT;
+	emit LCD_SET_4_BIT;
+	loop
+		[await FRONT_SHARP_VALUE ];
+		var fir:integer in	
+			fir:=?FRONT_SHARP_VALUE;
+			emit LCD_DISPLAY_INT_1(fir);
+			emit LCD_DISPLAY_2("FRONT");
+			if fir>69 and fir<225 then
+				[await RIGHT_SHARP_VALUE];
+				var rir:integer in
+					rir:=?RIGHT_SHARP_VALUE;
+					emit LCD_DISPLAY_INT_1(rir);
+					emit LCD_DISPLAY_2("RIGHT");
+					if rir>69 and rir<300 then
+						[await LEFT_SHARP_VALUE];
+						var lir:integer in
+							lir:=?LEFT_SHARP_VALUE;
+							emit LCD_DISPLAY_INT_1(lir);
+							emit LCD_DISPLAY_2(" LEFT");
+							if lir>69 and lir<300 then
+								emit LCD_DISPLAY_2(" BACK");
+								emit ROTATE_RIGHT(26);
+							else							
+								emit ROTATE_LEFT(16);
+							end;
+						end var;
+					else
+						emit ROTATE_RIGHT(12);
+					end;
+				end var;	
+				emit BUZZER_ON;				
+			else 
+				emit MOVE_FWD;
+				emit BUZZER_OFF;
+			end;
+
+		end var;
+	end
+end module

@@ -1,0 +1,11 @@
+#!/bin/sh
+modulename=`./getmodulename.pl $1`
+#echo $modulename
+filename=`echo $1 |cut -d '.' -f 1` 
+cec $1
+cec-strlxml < $1 > $filename."strlxml"
+./buildhash.pl $filename."strlxml" $filename."temp" $modulename
+echo "#include \"firebird_winavr.h\"" > $filename."temp1"
+cat $filename."c" $filename."temp" >> $filename."temp1"
+mv $filename."temp1" $filename."c"
+rm -rf $filename."temp1" $filename."strlxml" $filename."temp"

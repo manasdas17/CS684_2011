@@ -1,0 +1,67 @@
+module white:
+	input LEFT_WHITELINE_VALUE:integer, RIGHT_WHITELINE_VALUE:integer, MIDDLE_WHITELINE_VALUE:integer,FRONT_IR_VALUE:integer;
+	output MOVE_FWD,MOTOR_LEFT_SPEED:integer,MOTOR_RIGHT_SPEED:integer, TURN_LEFT, TURN_RIGHT,LEFT_BACK, RIGHT_BACK, PARK, BUZZER_ON,BUZZER_OFF;
+var x:=0:integer in
+trap T in
+	loop
+		[await LEFT_WHITELINE_VALUE || await RIGHT_WHITELINE_VALUE|| await FRONT_IR_VALUE||await MIDDLE_WHITELINE_VALUE];
+		var left_value:integer,right_value:integer,forward_sensor_value:integer,middle_value:integer in
+			left_value := ?LEFT_WHITELINE_VALUE;
+			right_value := ?RIGHT_WHITELINE_VALUE;
+			middle_value:=?MIDDLE_WHITELINE_VALUE;
+			forward_sensor_value:=?FRONT_IR_VALUE;
+			if left_value>40 then
+				emit MOVE_FWD;
+				emit MOTOR_LEFT_SPEED(150);
+				emit MOTOR_RIGHT_SPEED(70);
+			elsif right_value>40 then
+				emit MOVE_FWD;
+				emit MOTOR_LEFT_SPEED(70);
+				emit MOTOR_RIGHT_SPEED(150);
+ 			elsif right_value<40 and left_value<40 and middle_value<40 then 
+				emit MOVE_FWD;
+				emit MOTOR_LEFT_SPEED(0);
+				emit MOTOR_RIGHT_SPEED(0);
+				exit T
+			end;
+			if forward_sensor_value>250 and forward_sensor_value<300 then
+				emit MOVE_FWD;
+				emit MOTOR_LEFT_SPEED(100);
+				emit MOTOR_RIGHT_SPEED(100);				
+				emit BUZZER_ON;				
+			end;
+			if forward_sensor_value>200 and forward_sensor_value<250 then
+				emit MOVE_FWD;
+				emit MOTOR_LEFT_SPEED(50);
+				emit MOTOR_RIGHT_SPEED(50);				
+				emit BUZZER_ON;				
+			end;
+			if forward_sensor_value>150 and forward_sensor_value<200 then
+				emit MOVE_FWD;
+				emit MOTOR_LEFT_SPEED(0);
+				emit MOTOR_RIGHT_SPEED(0);				
+				emit BUZZER_ON;				
+			end;
+		
+		
+
+		end var;
+	end loop;
+end trap;
+emit TURN_LEFT;
+await FRONT_IR_VALUE;
+var forward_sensor_value:integer in
+forward_sensor_value:= ?FRONT_IR_VALUE;
+if forward_sensor_value>250 then
+emit PARK;
+else
+
+
+emit LEFT_BACK;
+x:=1;
+
+end;
+
+end var;
+end var;
+end module

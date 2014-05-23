@@ -1,0 +1,15 @@
+#!/bin/sh
+modulename=`./getmodulename.pl $1`
+#echo $modulename
+filename=`echo $1 |cut -d '.' -f 1` 
+#echo $filename
+#perl -p -i.bak -e 's/(\s*)module(\s*)(\S*)(\s*):/module MODULE:/g' $1
+cec $1
+#perl -p -i.bak -e 's/(\s*)module(\s*)(\S*)(\s*):/module '$modulename':/g' $1
+cec-strlxml < $1 > $filename."strlxml"
+./buildhash.pl $filename."strlxml" $filename."temp" $modulename
+echo "#include \"firebird_winavr.h\"" > $filename."temp1"
+cat $filename."c" $filename."temp" >> $filename."temp1"
+mv $filename."temp1" $filename."c"
+perl -p -i.bak -e 's/#define tick 1/#define tick tick_timer()/g' $filename."c"
+rm -rf $filename."temp1" $filename."strlxml" $filename."temp"

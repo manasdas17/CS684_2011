@@ -1,0 +1,113 @@
+# populated world for Vehicle robot
+
+include "map.inc"
+include "vehicle.inc"
+include "line.inc"
+
+
+# configure the GUI window
+window
+( 
+	size [700.000 688.000] 
+	scale 35.000
+	show_data 1
+)
+
+
+# load an environment bitmap
+floorplan
+(
+	bitmap "./bitmaps/caves.png" 
+	size [15.000 15.000 1.500]
+)
+
+vehicle
+(
+	name "vehicle1" 
+	pose [-5.000 -6.000 0 90.000] 
+	color "black"
+	
+
+	ctrl "../stage/map.so"
+
+	# report error-free position in world coordinates
+	localization "gps"
+	localization_origin [ 0 0 0 0 ]
+
+)
+
+
+vehicle
+(
+	name "vehicle2" 
+	pose [5.000 6.000 0 -90.000] 
+	color "black"
+	
+
+	ctrl "../stage/map.so"
+
+	# report error-free position in world coordinates
+	localization "gps"
+	localization_origin [ 0 0 0 0 ]
+
+)
+
+vehicle
+(
+	name "vehicle3" 
+	pose [4.000 -2.000 0 -90.000] 
+	color "black"
+	
+
+	ctrl "../stage/map.so"
+
+	# report error-free position in world coordinates
+	localization "gps"
+	localization_origin [ 0 0 0 0 ]
+
+)
+
+vehicle
+(
+	name "vehicle4" 
+	pose [-5.000 6.000 0 45.000] 
+	color "black"
+	
+
+	ctrl "../stage/map.so"
+
+	# report error-free position in world coordinates
+	localization "gps"
+	localization_origin [ 0 0 0 0 ]
+
+)
+
+vehicle
+(
+	name "vehicle5" 
+	pose [0.000 0.000 0 90.000] 
+	color "black"
+	
+
+	ctrl "../stage/map.so"
+
+	# report error-free position in world coordinates
+	localization "gps"
+	localization_origin [ 0 0 0 0 ]
+
+)
+vehicle
+(
+	name "vehicle6" 
+	pose [3.000 -6.000 0 90.000] 
+	color "black"
+	
+
+	ctrl "../stage/map.so"
+
+	# report error-free position in world coordinates
+	localization "gps"
+	localization_origin [ 0 0 0 0 ]
+
+)
+

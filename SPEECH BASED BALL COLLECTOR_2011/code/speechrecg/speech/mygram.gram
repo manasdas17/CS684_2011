@@ -1,0 +1,7 @@
+#JSGF V1.0;
+
+grammar mygram;
+
+public <mygram> = <colors>;
+ 
+<colors> = (red | blue | green);
